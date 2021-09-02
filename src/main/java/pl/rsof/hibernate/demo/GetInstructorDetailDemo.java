@@ -10,6 +10,8 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
+import pl.rsof.hibernate.demo.entity.Instructor;
+import pl.rsof.hibernate.demo.entity.InstructorDetail;
 import pl.rsof.hibernate.demo.entity.Student;
 
 /**
@@ -17,45 +19,39 @@ import pl.rsof.hibernate.demo.entity.Student;
  * @author RS
  *
  */
-public class UpdateStudentDemo {
+public class GetInstructorDetailDemo {
 
 	
 	public static void main(String[] args) {
 	
 		SessionFactory factory = new Configuration()
 								.configure("hibernate.cfg.xml")
-								.addAnnotatedClass(Student.class)
+								.addAnnotatedClass(Instructor.class)
+								.addAnnotatedClass(InstructorDetail.class)
 								.buildSessionFactory();
 		
 		Session session = factory.getCurrentSession();
 		
 		try {
-			int studentId = 1;
-			
 			session.beginTransaction();
+			int id = 1;
+			InstructorDetail instructorDetail = session.get(InstructorDetail.class, id);
 			
-			Student student = session.get(Student.class, studentId);
-			System.out.println("Retrieve student "+student);
+			System.out.println("Instructor detail: "+instructorDetail);
 			
-			System.out.println("Update student "+student);
-			student.setFirstName("Tomasz");
+			System.out.println("Instructor: "+instructorDetail.getInstructor());
 			
 			session.getTransaction().commit();
 			
-			
-			
-			session = factory.getCurrentSession();
-			session.beginTransaction();
-			
-			session.createQuery("update Student set email='admin@gmail.com' where id < 10").executeUpdate();
-			
-			session.getTransaction().commit();
-			
+			System.out.println("Done, final!");
 			
 		}catch(Exception e) {
-			
+			e.printStackTrace();
 		}
 		finally {
+			// leak connection
+			session.close();
+			
 			factory.close();
 		}
 	}

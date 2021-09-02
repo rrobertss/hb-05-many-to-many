@@ -10,6 +10,8 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
+import pl.rsof.hibernate.demo.entity.Instructor;
+import pl.rsof.hibernate.demo.entity.InstructorDetail;
 import pl.rsof.hibernate.demo.entity.Student;
 
 /**
@@ -17,42 +19,35 @@ import pl.rsof.hibernate.demo.entity.Student;
  * @author RS
  *
  */
-public class ReadStudentDemo {
+public class CreateDemo {
 
 	
 	public static void main(String[] args) {
 	
 		SessionFactory factory = new Configuration()
 								.configure("hibernate.cfg.xml")
-								.addAnnotatedClass(Student.class)
+								.addAnnotatedClass(Instructor.class)
+								.addAnnotatedClass(InstructorDetail.class)
 								.buildSessionFactory();
 		
 		Session session = factory.getCurrentSession();
 		
 		try {
-			// save
-			Student student = new Student("Witold", "Daszka", "wdaszka88@gmail.pl");
-			session.beginTransaction();
-			session.save(student);
-			session.getTransaction().commit();
-			System.out.println("Student saved: "+ student.getFirstName() + " " + student.getLastName());
+			Instructor instructor = new Instructor("Anna", "Pisaniak", "pisaniak1977@wp.pl");
+			InstructorDetail instructorDetail = new InstructorDetail("", "flowers");
+			instructor.setInstructorDetail(instructorDetail);
 			
-			// retrieve
-			session = factory.getCurrentSession();
 			session.beginTransaction();
 			
-			Student myStudent = session.get(Student.class, student.getId());
-			if (myStudent != null) {
-				System.out.println("Retrieve student: "+myStudent.getId()+" "+myStudent.getEmail());
-			}
-			else {
-				System.err.println("Student not found "+student.getId());
-			}
+			// CascadeType.ALL
+			session.save(instructor);
 			
 			session.getTransaction().commit();
+			
+			System.out.println("Done, final!");
 			
 		}catch(Exception e) {
-			
+			e.printStackTrace();
 		}
 		finally {
 			factory.close();

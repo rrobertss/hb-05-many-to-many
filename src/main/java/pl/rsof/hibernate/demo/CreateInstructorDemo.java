@@ -10,6 +10,9 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
+import pl.rsof.hibernate.demo.entity.Course;
+import pl.rsof.hibernate.demo.entity.Instructor;
+import pl.rsof.hibernate.demo.entity.InstructorDetail;
 import pl.rsof.hibernate.demo.entity.Student;
 
 /**
@@ -17,45 +20,39 @@ import pl.rsof.hibernate.demo.entity.Student;
  * @author RS
  *
  */
-public class DeleteStudentDemo {
+public class CreateInstructorDemo {
 
 	
 	public static void main(String[] args) {
 	
 		SessionFactory factory = new Configuration()
 								.configure("hibernate.cfg.xml")
-								.addAnnotatedClass(Student.class)
+								.addAnnotatedClass(Instructor.class)
+								.addAnnotatedClass(InstructorDetail.class)
+								.addAnnotatedClass(Course.class)
 								.buildSessionFactory();
 		
 		Session session = factory.getCurrentSession();
 		
 		try {
-			int studentId = 1;
+			Instructor instructor = new Instructor("Dorota", "Nowak", "dnowak1977@wp.pl");
+			InstructorDetail instructorDetail = new InstructorDetail("http://www.youtube.com/c/nowak-games777", "Video Games");
+			instructor.setInstructorDetail(instructorDetail);
 			
 			session.beginTransaction();
 			
-			Student student = session.get(Student.class, studentId);
-			System.out.println("Retrieve student "+student);
-			
-			System.out.println("Delete student "+student);
-			session.delete(student);
+			// CascadeType.ALL
+			session.save(instructor);
 			
 			session.getTransaction().commit();
 			
-			
-			
-			session = factory.getCurrentSession();
-			session.beginTransaction();
-			
-			session.createQuery("delete from Student where id < 10").executeUpdate();
-			
-			session.getTransaction().commit();
-			
+			System.out.println("Done, final!");
 			
 		}catch(Exception e) {
-			
+			e.printStackTrace();
 		}
 		finally {
+			session.close();
 			factory.close();
 		}
 	}
