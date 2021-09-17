@@ -21,7 +21,7 @@ import pl.rsof.hibernate.demo.entity.Student;
  * @author RS
  *
  */
-public class AddCourseForStudentDemo {
+public class DeleteStudentDemo {
 
 	
 	public static void main(String[] args) {
@@ -40,19 +40,10 @@ public class AddCourseForStudentDemo {
 		try {
 			session.beginTransaction();
 			int id = 2;
+			
 			Student student = session.get(Student.class, id);
 			
-			Course c1 = new Course("Spring framework guru");
-			Course c2 = new Course("Spring for beginners");
-			Course c3 = new Course("SOLID");
-			
-			c1.addStudent(student);
-			c2.addStudent(student);
-			c3.addStudent(student);
-			
-			session.save(c1);
-			session.save(c2);
-			session.save(c3);
+			session.delete(student);
 			
 			session.getTransaction().commit();
 			

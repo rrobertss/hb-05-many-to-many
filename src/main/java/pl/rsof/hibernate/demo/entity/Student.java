@@ -1,5 +1,5 @@
 /*
- *  Company: RS
+ś *  Company: RS
  *  Project: hibernate-tutorial
  *  Created: 21 lip 2021  12:33:22
  *  Author:  RS 		
@@ -98,6 +98,16 @@ public class Student {
 	}
 
 	
+	public List<Course> getCourses() {
+		return courses;
+	}
+
+
+	public void setCourses(List<Course> courses) {
+		this.courses = courses;
+	}
+
+
 	public void addCourse(Course course) {
 		if (courses == null) {
 			courses = new ArrayList<>();
