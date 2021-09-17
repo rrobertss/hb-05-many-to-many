@@ -10,8 +10,10 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
+import pl.rsof.hibernate.demo.entity.Course;
 import pl.rsof.hibernate.demo.entity.Instructor;
 import pl.rsof.hibernate.demo.entity.InstructorDetail;
+import pl.rsof.hibernate.demo.entity.Review;
 import pl.rsof.hibernate.demo.entity.Student;
 
 /**
@@ -19,7 +21,7 @@ import pl.rsof.hibernate.demo.entity.Student;
  * @author RS
  *
  */
-public class GetInstructorDetailDemo {
+public class CreateCourseAndStudentsDemo {
 
 	
 	public static void main(String[] args) {
@@ -28,18 +30,29 @@ public class GetInstructorDetailDemo {
 								.configure("hibernate.cfg.xml")
 								.addAnnotatedClass(Instructor.class)
 								.addAnnotatedClass(InstructorDetail.class)
+								.addAnnotatedClass(Course.class)
+								.addAnnotatedClass(Review.class)
+								.addAnnotatedClass(Student.class)
 								.buildSessionFactory();
 		
 		Session session = factory.getCurrentSession();
 		
 		try {
 			session.beginTransaction();
-			int id = 1;
-			InstructorDetail instructorDetail = session.get(InstructorDetail.class, id);
 			
-			System.out.println("Instructor detail: "+instructorDetail);
+			Course c1 = new Course("Programming JAVA");
+		
+			session.save(c1);
+		
 			
-			System.out.println("Instructor: "+instructorDetail.getInstructor());
+			Student s1 = new Student("Adam", "Nowak", "adam2243@gmail.com");
+			Student s2 = new Student("Anna", "Cap", "anacap@gmail.com");
+			
+			c1.addStudent(s1);
+			c1.addStudent(s2);
+			
+			session.save(s1);
+			session.save(s2);
 			
 			session.getTransaction().commit();
 			
@@ -49,9 +62,7 @@ public class GetInstructorDetailDemo {
 			e.printStackTrace();
 		}
 		finally {
-			// leak connection
 			session.close();
-			
 			factory.close();
 		}
 	}
